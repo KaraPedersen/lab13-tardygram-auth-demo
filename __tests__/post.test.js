@@ -67,5 +67,36 @@ describe('demo routes', () => {
 
     expect(res.body).toEqual([post1, post2]);
   });
+
+  it('gets a posts by id', async() => {
+    const post = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture',
+      caption: 'Lookie Lookie',
+      tags: ['winter', 'wonderland']
+    });
+
+    const res = await request(app)
+      .get(`/api/v1/posts/${post.id}`);
+
+    expect(res.body).toEqual(post);
+  });
+
+  it('updates a post', async() => {
+    const post = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture',
+      caption: 'placeholder',
+      tags: ['haha', 'sorry not sorry']
+    });
+
+    post.caption = 'new doggie shot';
+
+    const res = await agent
+      .patch(`/api/v1/posts/${post.id}`)
+      .send({ caption: 'new doggie shot' });
+
+    expect(res.body).toEqual(post);
+  });
 });
 
