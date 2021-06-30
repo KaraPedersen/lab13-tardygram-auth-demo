@@ -16,19 +16,22 @@ describe('demo routes', () => {
       .post('/api/v1/auth/signup')
       .send({
         username: 'Azlynn',
-        password: 'password'
+        password: 'password',
+        profilePhotoUrl: expect.any(String)
       });
 
     expect(res.body).toEqual({
       id: '1',
-      username: 'Azlynn'
+      username: 'Azlynn',
+      profilePhotoUrl: expect.any(String)
     });
   });
 
   it('login a user via POST', async() => {
     const user = await UserService.create({
       username: 'Azlynn',
-      password: 'password'
+      password: 'password',
+      profilePhotoUrl: 'a'
     });
     const res = await agent
       .post('/api/v1/auth/login')
@@ -40,6 +43,7 @@ describe('demo routes', () => {
     expect(res.body).toEqual({
       id: user.id,
       username: user.username,
+      profilePhotoUrl: 'a'
     });
   });
 
