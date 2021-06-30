@@ -47,5 +47,27 @@ describe('demo routes', () => {
     });
   });
 
+  it('verifies user logged in', async() => {
+    const agent = request.agent(app);
+    const user = await UserService.create({
+      username: 'Azlynn',
+      password: 'password',
+      profilePhotoUrl: 'a'
+    });
+    await agent.post('/api/v1/auth/login')
+      .send({
+        username: 'Azlynn',
+        password: 'password'
+      });
+    const res = await agent.get('/api/v1/verify');
 
+    expect(res.body).toEqual({
+      id: user.id,
+      username: 'Azlynn',
+      passwordHash: expect.any(String),
+      profilePhotoUrl: 'a',
+      iat: expect.any(Number),
+      exp: expect.any(Number)
+    });
+  });
 });
