@@ -11,7 +11,7 @@ describe('demo routes', () => {
   });
 
   it('signs up a user via POST', async() => {
-    const res = await request(app)
+    const res = await request(app) 
       .post('/api/v1/auth/signup')
       .send({
         email: 'test@test.com',
@@ -24,6 +24,19 @@ describe('demo routes', () => {
     });
   });
 
+  it('login a user via POST', async() => {
+    const res = await agent
+      .post('/api/v1/auth/login')
+      .send({
+        email: 'test@test.com',
+        password: 'password'
+      });
+
+    expect(res.body).toEqual({
+      id: '1',
+      email: 'test@test.com'
+    });
+  });
 
 
 });
