@@ -67,5 +67,19 @@ describe('demo routes', () => {
 
     expect(res.body).toEqual([post1, post2]);
   });
+
+  it('gets a posts by id', async() => {
+    const post = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture',
+      caption: 'Lookie Lookie',
+      tags: ['winter', 'wonderland']
+    });
+
+    const res = await request(app)
+      .get(`/api/v1/posts/${post.id}`);
+
+    expect(res.body).toEqual(post);
+  });
 });
 
