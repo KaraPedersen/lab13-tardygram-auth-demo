@@ -6,7 +6,7 @@ import app from '../lib/app.js';
 const agent = request.agent(app);
 
 describe('demo routes', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     return setup(pool);
   });
 
