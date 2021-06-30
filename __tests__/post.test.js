@@ -46,5 +46,26 @@ describe('demo routes', () => {
       tags: ['winter', 'wonderland']
     });
   });
+
+  it('gets all posts', async() => {
+    const post1 = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture',
+      caption: 'Lookie Lookie',
+      tags: ['winter', 'wonderland']
+    });
+
+    const post2 = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture2',
+      caption: 'first let me take a selfie',
+      tags: ['funny', 'pic']
+    });
+
+    const res = await request(app)
+      .get('/api/v1/posts');
+
+    expect(res.body).toEqual([post1, post2]);
+  });
 });
 
