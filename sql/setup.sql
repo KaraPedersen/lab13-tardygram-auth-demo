@@ -13,3 +13,9 @@ CREATE TABLE posts (
   caption TEXT NOT NULL,
   tags TEXT [] NOT NULL
 );
+CREATE TABLE comments (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  comment_by BIGINT REFERENCES users(id) NOT NULL,
+  post BIGINT REFERENCES posts(id) NOT NULL,
+  comment TEXT NOT NULL
+);
