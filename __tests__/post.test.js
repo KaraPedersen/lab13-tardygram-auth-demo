@@ -4,6 +4,7 @@ import request from 'supertest';
 import app from '../lib/app.js';
 import UserService from '../lib/services/UserService.js';
 import Post from '../lib/models/Post.js';
+import Comment from '../lib/models/Comment.js';
 
 
 describe('demo routes', () => {
@@ -29,7 +30,6 @@ describe('demo routes', () => {
   it('creates a post via POST', async() => {
 
     const res = await agent
-
       .post('/api/v1/posts')
       .send({
         userId: user.id,
@@ -69,6 +69,7 @@ describe('demo routes', () => {
   });
 
   it('gets a posts by id', async() => {
+
     const post = await Post.insert({
       userId: user.id,
       photoUrl: 'picture',
@@ -76,9 +77,15 @@ describe('demo routes', () => {
       tags: ['winter', 'wonderland']
     });
 
+    await Comment.insert({
+      id: '1',
+      commentBy: user.id,
+      post: post.id,
+      comment: 'Beautiful!',
+    });
+
     const res = await request(app)
       .get(`/api/v1/posts/${post.id}`);
-
     expect(res.body).toEqual(post);
   });
 
@@ -107,10 +114,48 @@ describe('demo routes', () => {
       tags: ['party hard', 'party forever']
     });
 
-    const res = await agent.delete(`/api/v1/posts/${post.id}`)
+    const res = await agent
+      .delete(`/api/v1/posts/${post.id}`)
       .send(post);
 
     expect(res.body).toEqual(post);
   });
+
+  it('gets top 10 posts', async() => {
+    const post1 = await Post.insert({
+      userId: user.id,
+      photoUrl: 'x',
+      caption: 'ugh',
+      tags: ['mistake', 'never again']
+    });
+    
+    await Comment.insert({
+      id: '1',
+      commentBy: user.id,
+      post: post1.id,
+      comment: 'Wow!',
+    });
+
+    await Comment.insert({
+      id: '1',
+      commentBy: user.id,
+      post: post1.id,
+      comment: 'Wow!',
+    });
+
+    await Comment.insert({
+      id: '1',
+      commentBy: user.id,
+      post: post1.id,
+      comment: 'Wow!',
+    });
+
+    const res = await request(app)
+      .get('/api/v1/posts/popular');
+
+    expect(res.body[0]).toEqual(post1);
+
+  });
 });
+
 
