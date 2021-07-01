@@ -4,12 +4,12 @@ import request from 'supertest';
 import app from '../lib/app.js';
 import UserService from '../lib/services/UserService.js';
 import Post from '../lib/models/Post.js';
-// import Comment from '../lib/models/Comment.js';
+import Comment from '../lib/models/Comment.js';
 
 describe('demo routes', () => {
 
-  let user = {};
-  const post = {}; 
+  let user = {}; 
+  let post = {};
   let agent;
   
   beforeEach(async() => {
@@ -28,14 +28,16 @@ describe('demo routes', () => {
   });
   
   it('creates a comment via POST', async() => {
-
-    const post = await Post.insert({
+   
+    post = await Post.insert({
       userId: user.id,
-      photoUrl: 'pic',
-      caption: 'Holy Cow! Look at That!',
+      photoUrl: 'picture',
+      caption: 'Holy Cow! Look at that!',
       tags: ['cow', 'summer time sadness']
     });
-   
+
+ 
+  
     const res = await agent
       .post('/api/v1/comments')
       .send({
@@ -43,12 +45,36 @@ describe('demo routes', () => {
         post: post.id,
         comment: 'Beautiful!',
       });
-
+ 
     expect(res.body).toEqual({
       id: '1',
       commentBy: user.id,
       post: post.id,
       comment: 'Beautiful!',
     });
+  });
+
+  it('deletes a comment', async() => {
+
+    post = await Post.insert({
+      userId: user.id,
+      photoUrl: 'picture',
+      caption: 'Holy Cow! Look at that!',
+      tags: ['cow', 'summer time sadness']
+    });
+      
+    const comment = await Comment.insert({
+      id: '1',
+      commentBy: user.id,
+      post: post.id,
+      comment: 'Beautiful!',
+    });
+
+    const res = await agent
+      .delete(`/api/v1/comments/${comment.id}`)
+      .send(comment);
+
+    expect(res.body).toEqual(comment);
+
   });
 });

@@ -12,7 +12,7 @@ CREATE TABLE posts (
   user_id BIGINT REFERENCES users(id) NOT NULL,
   photo_url TEXT NOT NULL,
   caption TEXT NOT NULL,
-  tags TEXT [] NOT NULL
+  tags text [] NOT NULL
 );
 CREATE TABLE comments (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
